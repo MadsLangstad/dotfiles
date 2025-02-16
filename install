@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 
-DOTFILES=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+DOTFILES=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 CONFIG_DIR="$HOME/.config"
+LOCAL_BIN="$HOME/.local/bin"
+
+# Create .local/bin if it doesn't exist
+mkdir -p "$LOCAL_BIN"
 
 # Confirmation Prompt
-read -p "This script will remove existing dotfiles in $CONFIG_DIR and create new symlinks. Are you sure? (y/n) " -n 1 -r
-echo    # Add a newline after the response
+read -p "This script will remove existing dotfiles in $CONFIG_DIR and create new symlinks in $HOME. Are you sure? (y/n) " -n 1 -r
+echo # Add a newline after the response
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   echo "Aborting."
   exit 1
@@ -35,8 +39,13 @@ create_symlink() {
       echo "Backing up existing $app_name directory to $target.bak"
       mv "$target" "$target.bak"
     else
-      echo "Error: $target exists and is not a directory.  Please remove it manually."
-      exit 1
+      # It's a file, back it up
+      if [ -e "$target.bak" ]; then
+        echo "Removing existing backup file: $target.bak"
+        rm -f "$target.bak"
+      fi
+      echo "Backing up existing $app_name file to $target.bak"
+      mv "$target" "$target.bak"
     fi
   fi
 
@@ -63,5 +72,14 @@ create_symlink "$DOTFILES/iterm2" "$CONFIG_DIR/iterm2" "iTerm2"
 
 # Raycast
 create_symlink "$DOTFILES/raycast" "$CONFIG_DIR/raycast" "raycast"
+
+# Scripts/t
+create_symlink "$DOTFILES/scripts/t" "$LOCAL_BIN/t" "t"
+
+# zshrc
+create_symlink "$DOTFILES/.zshrc" "$HOME/.zshrc" "zshrc"
+
+# bashrc
+create_symlink "$DOTFILES/.bashrc" "$HOME/.bashrc" "bashrc"
 
 echo "Dotfiles installation complete."
