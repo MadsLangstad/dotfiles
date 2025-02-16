@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+DOTFILES=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+CONFIG_DIR="$HOME/.config"
+
+# Confirmation Prompt
+read -p "This script will remove existing dotfiles in $CONFIG_DIR and create new symlinks. Are you sure? (y/n) " -n 1 -r
+echo    # Add a newline after the response
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+  echo "Aborting."
+  exit 1
+fi
+
+# Function to create a symlink
+create_symlink() {
+  local source="$1"
+  local target="$2"
+  local app_name="$3" # Application name for messages
+
+  # Check if the target exists and is a symlink pointing to the correct source
+  if [ -L "$target" ] && [ "$(readlink "$target")" = "$source" ]; then
+    echo "Symlink for $app_name already exists and is up-to-date: '$target' -> '$source'"
+    return
+  fi
+
+  # Check if the target exists
+  if [ -e "$target" ]; then
+    # Check if it's a directory
+    if [ -d "$target" ]; then
+      # Check if a backup already exists
+      if [ -e "$target.bak" ]; then
+        echo "Removing existing backup directory: $target.bak"
+        rm -rf "$target.bak"
+      fi
+      echo "Backing up existing $app_name directory to $target.bak"
+      mv "$target" "$target.bak"
+    else
+      echo "Error: $target exists and is not a directory.  Please remove it manually."
+      exit 1
+    fi
+  fi
+
+  # Create the symlink
+  ln -s "$source" "$target"
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to create symlink for $app_name: '$target' -> '$source'"
+    exit 1
+  fi
+  echo "Created symlink for $app_name: '$target' -> '$source'"
+}
+
+# Tmux
+create_symlink "$DOTFILES/tmux" "$CONFIG_DIR/tmux" "tmux"
+
+# Kitty
+create_symlink "$DOTFILES/kitty" "$CONFIG_DIR/kitty" "kitty"
+
+# Ghostty
+create_symlink "$DOTFILES/ghostty" "$CONFIG_DIR/ghostty" "ghostty"
+
+# iTerm2
+create_symlink "$DOTFILES/iterm2" "$CONFIG_DIR/iterm2" "iTerm2"
+
+# Raycast
+create_symlink "$DOTFILES/raycast" "$CONFIG_DIR/raycast" "raycast"
+
+echo "Dotfiles installation complete."
