@@ -73,7 +73,10 @@ create_symlink "$DOTFILES/iterm2" "$CONFIG_DIR/iterm2" "iTerm2"
 # Raycast
 create_symlink "$DOTFILES/raycast" "$CONFIG_DIR/raycast" "raycast"
 
-# Scripts/t
+# Nvim
+create_symlink "$DOTFILES/nvim" "$CONFIG_DIR/nvim" "nvim"
+
+# Scripts/t 
 create_symlink "$DOTFILES/scripts/t" "$LOCAL_BIN/t" "t"
 
 # zshrc

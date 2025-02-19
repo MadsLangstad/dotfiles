@@ -42,7 +42,7 @@ alias ll="ls -lG"
 alias c="clear"
 alias sz="source ~/.zshrc"
 alias sb="source ~/.bashrc"
-alias vim="nvim"
+alias vi="nvim"
 
 # Ollama
 alias oq="ollama run qwen2.5-coder:latest"
