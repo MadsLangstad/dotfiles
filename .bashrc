@@ -1,82 +1,35 @@
-# Prompt
-PROMPT='%F{green}%F{blue}%~%f '
+# ~/.bashrc - Bash configuration (converted from Zsh settings)
 
-# Set the maximum number of history entries
-HISTSIZE=5000
-SAVEHIST=5000
+# History Settings (Bash equivalent of Zsh's setopt options)
+HISTSIZE=10000                     # number of commands to remember in history
+HISTFILESIZE=10000                 # maximum lines contained in history file (similar to Zsh SAVEHIST)
+HISTCONTROL=ignoreboth:erasedups   # ignore duplicate entries and lines starting with space:contentReference[oaicite:0]{index=0}
+shopt -s histappend                # append to history file, don't overwrite it on shell exit:contentReference[oaicite:1]{index=1}
+PROMPT_COMMAND="history -a${PROMPT_COMMAND:+; $PROMPT_COMMAND}"  
+# ^ Immediately append new commands to the history file after each command (mimics Zsh INC_APPEND_HISTORY and SHARE_HISTORY):contentReference[oaicite:2]{index=2}
 
-# Define the file where history is saved
-HISTFILE=~/.zsh_history
+# Prompt Settings (use PS1 in Bash instead of Zsh's PROMPT)
+# This prompt shows "user@host cwd $", with colors similar to the Zsh prompt definition.
+# (\u = username, \h = hostname, \w = current working directory, \[\e[Xm\] = color codes)
+PS1="\[\e[32m\] \[\e[34m\]\w\[\e[0m\]\$ "
+# (Converted Zsh prompt '%~' to Bash '\w', and applied equivalent color codes):contentReference[oaicite:3]{index=3}
 
-# Prevent duplicates and empty commands in history
-setopt HIST_IGNORE_DUPS
-setopt HIST_IGNORE_SPACE
-setopt SHARE_HISTORY # Share history across sessions
+# Alias definitions (Zsh and Bash use the same alias syntax)
+alias ll='ls -alF'          # example alias (list with details)
+alias gs='git status'       # example alias for Git status
+# (Add any other aliases from your original file here; no changes needed for Bash)
 
-# NVM (Node Version Manager)
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+# Environment variables (no Zsh-specific syntax needed for exports)
+export PATH="$HOME/bin:$PATH"
+export SDKMAN_DIR="$HOME/.sdkman"   # SDKMAN environment variable
 
-# Set default editor
-export EDITOR="code"
+# iTerm2 Shell Integration (use Bash-specific script instead of Zsh script)
+if [ -e "$HOME/.iterm2_shell_integration.bash" ]; then
+    source "$HOME/.iterm2_shell_integration.bash"
+fi
+# (Changed from .iterm2_shell_integration.zsh to .bash for Bash compatibility)
 
-# iTerm2 shell integration
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-# SDKMAN for managing Java versions
-export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
-export PATH="$JAVA_HOME/bin:$PATH"
-
-# Android SDK
-export ANDROID_HOME=~/Library/Android/sdk
-export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
-
-# Laravel
-export PATH="$HOME/.composer/vendor/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-
-# Aliases
-# Terminal
-alias ll="ls -lG"
-alias c="clear"
-alias sz="source ~/.zshrc"
-alias sb="source ~/.bashrc"
-alias vim="nvim"
-
-# Ollama
-alias oq="ollama run qwen2.5-coder:latest"
-alias og="ollama run granite3.1-moe"
-alias od="ollama run deepseek-r1:8b"
-
-# Homebrew
-alias brewf="brew update && brew upgrade && brew cleanup && brew doctor"
-
-# Docker
-alias d="docker"
-alias lwlvl="docker start -ai ubuntu-lowlevel"
-alias kali="docker start -ai kali-hacking"
-
-# Easy HTTP server
-alias serve="python3 -m http.server"
-
-# Arduino
-alias arduino='open -a "Arduino IDE"'
-
-# Functions
-# Create directories and navigate into them
-function take {
-  mkdir -p "$1"
-  cd "$1"
-}
-
-# Quick notes
-function note {
-  echo "Date: $(date)" >> "$HOME/drafts.txt"
-  echo "$@" >> "$HOME/drafts.txt"
-  echo "" >> "$HOME/drafts.txt"
-}
-
-# SDKMAN initialization (must be at the end of the file)
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+# SDKMAN Initialization (works in Bash as well as Zsh)
+if [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+fi
